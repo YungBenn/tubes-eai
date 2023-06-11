@@ -5,8 +5,6 @@ Hotelin-BE is a backend service for Hotelin, a web application for managing and 
 ## Prerequisites
 
 - [Go](https://golang.org/dl/)
-- [Docker](https://docs.docker.com/install/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Getting Started
 
@@ -15,7 +13,7 @@ Hotelin-BE is a backend service for Hotelin, a web application for managing and 
 - Clone the repository
 
 ```bash
-$ git clone https://github.com/rafidfadhil/UTSIAE.git
+$ git clone https://github.com/YungBenn/tubes-eai.git
 ```
 
 - Install dependencies
@@ -29,7 +27,6 @@ $ go mod download
 - Run the application
 
 ```bash
-$ docker-compose up
 $ go run main.go
 ```
 
@@ -38,3 +35,8 @@ Running the application will create a database named `hotelin` in your local Pos
 ## Regards
 
 - Rafid Fadhil
+- Ruben Adisuryo Nugroho
+- Fadli Izurohman
+- Kemal Aziz
+- Usein Akbar
+- Rafi Franciska
