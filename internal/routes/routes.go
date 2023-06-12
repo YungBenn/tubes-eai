@@ -111,9 +111,9 @@ func Setup(app *fiber.App) {
 
 	hotelAdminAPI := adminAPI.Group("/hotel")
 	hotelAdminAPI.Post("/create", hotel.RegisterHotel)
-	hotelAdminAPI.Get("/detail", hotel.GetHotelByID)
-	hotelAdminAPI.Put("/update", hotel.UpdateHotel)
-	hotelAdminAPI.Delete("/delete", hotel.DeleteHotel)
+	hotelAdminAPI.Get("/detail/:id", hotel.GetHotelByID)
+	hotelAdminAPI.Put("/update/:id", hotel.UpdateHotel)
+	hotelAdminAPI.Delete("/delete/:id", hotel.DeleteHotel)
 
 	roomAPI := api.Group("/room").Use(middleware.AuthAdmin(middleware.Config{
 		Unauthorized: func(c *fiber.Ctx) error {

@@ -39,15 +39,16 @@ func RegisterHotel(c *fiber.Ctx) error {
 
 
 func GetHotelByID(c *fiber.Ctx) error {
-	var hotel models.Hotel
+	id := c.Params("id")
 
-	id := c.Query("id")
+	var hotel =  models.Hotel{ID: id}
 
-	err := database.DB.Where("id = ?", id).First(&hotel).Error
+	// err := database.DB.Where("id = ?", id).First(&hotel).Error
+	err := database.DB.Model([]models.Hotel{}).First(&hotel).Error
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not get Hotel",
+			"message": err.Error(),
 		})
 	}
 
@@ -70,14 +71,7 @@ func GetHotelByID(c *fiber.Ctx) error {
 func UpdateHotel(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	var hotel models.Hotel
-
-	err := database.DB.First(&hotel, id).Error
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Internal server error id",
-		})
-	}
+	// var hotel models.Hotel
 
 	req := models.HotelRequest{}
 
@@ -87,7 +81,16 @@ func UpdateHotel(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.DB.Model(&hotel).Updates(req).Error
+	updateHotel := models.Hotel{
+		ID: string(id),
+		Name: req.Name,
+		Email: req.Email,
+		Phone: req.Phone,
+		Address: req.Address,
+		Rating: req.Rating,
+	}
+
+	err := database.DB.Save(&updateHotel).Error
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Internal server error",
@@ -102,16 +105,12 @@ func UpdateHotel(c *fiber.Ctx) error {
 func DeleteHotel(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	var hotel models.Hotel
-
-	err := database.DB.First(&hotel, id).Error
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Internal server error",
-		})
+	// var hotel models.Hotel
+	hotel := models.Hotel{
+		ID: string(id),
 	}
 
-	err = database.DB.Delete(&hotel).Error
+	err := database.DB.Delete(&hotel).Error
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Internal server error",
