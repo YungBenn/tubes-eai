@@ -49,7 +49,11 @@ func GetAllBundle(c *fiber.Ctx) error {
 		log.Fatal(err)
 	}
 
-	return c.Status(200).JSON(response)
+	return c.Status(200).JSON(fiber.Map{
+		"status":  200,
+		"message": "Success get all book bundle",
+		"bundle":  response,
+	})
 }
 
 func GetBundleByID(c *fiber.Ctx) error {
@@ -80,7 +84,11 @@ func GetBundleByID(c *fiber.Ctx) error {
 		log.Fatal(err)
 	}
 
-	return c.Status(200).JSON(response)
+	return c.Status(200).JSON(fiber.Map{
+		"status":  200,
+		"message": "Success get book bundle",
+		"bundle":  response,
+	})
 }
 
 type BookingRequest struct {
@@ -167,6 +175,7 @@ func PutBookBundle(c *fiber.Ctx) error {
 	// Menampilkan respons
 	fmt.Println("Response:", responseBody)
 	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  200,
 		"message": "Book bundle updated",
 	})
 }
