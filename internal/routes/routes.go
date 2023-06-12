@@ -107,7 +107,11 @@ func Setup(app *fiber.App) {
 		},
 	}))
 	adminAPI.Get("/hotel", admin.ShowAllHotel)
-	adminAPI.Get("/kota", admin.GetAllKota)
+
+	// Consume Bundle
+	adminAPI.Get("/bundle", admin.GetAllBundle)
+	adminAPI.Get("/bundle/:id", admin.GetBundleByID)
+	adminAPI.Put("/bundle/:id", admin.PutBookBundle)
 
 	hotelAdminAPI := adminAPI.Group("/hotel")
 	hotelAdminAPI.Post("/create", hotel.RegisterHotel)

@@ -31,10 +31,10 @@ func RegisterRoom(c *fiber.Ctx) error {
 	}
 
 	newRoom := models.Room{
-		Name:    			 req.Name,
-		Price:   			 req.Price,
-		Description:   req.Description,
-		HotelID: 			 req.HotelID,
+		Name:        req.Name,
+		Price:       req.Price,
+		Description: req.Description,
+		HotelID:     req.HotelID,
 	}
 
 	err = database.DB.Create(&newRoom).Error
@@ -44,31 +44,22 @@ func RegisterRoom(c *fiber.Ctx) error {
 	}
 
 	response := models.RoomResponse{
-		ID:      			 newRoom.ID,
-		Name:    			 newRoom.Name,
-		Price:   			 newRoom.Price,
-		Description:   newRoom.Description,
-		HotelID: 			 newRoom.HotelID,
+		ID:          newRoom.ID,
+		Name:        newRoom.Name,
+		Price:       newRoom.Price,
+		Description: newRoom.Description,
+		HotelID:     newRoom.HotelID,
 	}
 
 	return c.Status(http.StatusCreated).JSON(fiber.Map{
 		"message": "Room registered",
-		"data":			response,
+		"data":    response,
 	})
 
 }
 
 func UpdateRoom(c *fiber.Ctx) error {
-	id := c.Params("id")
-
-	var room models.Room
-
-	err := database.DB.First(&room, id).Error
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Internal server error id",
-		})
-	}
+	id := c.Query("id")
 
 	req := models.RoomRequest{}
 
@@ -78,7 +69,15 @@ func UpdateRoom(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.DB.Model(&room).Updates(req).Error
+	updateRoom := models.Room{
+		ID:          id,
+		Name:        req.Name,
+		Price:       req.Price,
+		Description: req.Description,
+		HotelID:     req.HotelID,
+	}
+
+	err := database.DB.Save(&updateRoom).Error
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Internal server error",
@@ -91,18 +90,14 @@ func UpdateRoom(c *fiber.Ctx) error {
 }
 
 func DeleteRoom(c *fiber.Ctx) error {
-	id := c.Params("id")
+	id := c.Query("id")
 
-	var room models.Room
-
-	err := database.DB.First(&room, id).Error
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Internal server error",
-		})
+	// var room models.Room
+	room := models.Room{
+		ID: id,
 	}
 
-	err = database.DB.Delete(&room).Error
+	err := database.DB.Delete(&room).Error
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Internal server error",
@@ -115,11 +110,14 @@ func DeleteRoom(c *fiber.Ctx) error {
 }
 
 func GetRoomByHotelID(c *fiber.Ctx) error {
-	room := []models.Room{}
+	// room := []models.Room{}
 
 	id := c.Query("id")
 
-	err := database.DB.Where("hotel_id = ?", id).Find(&room).Error
+	var room = models.Room{ID: id}
+
+	// err := database.DB.Where("hotel_id = ?", id).Find(&room).Error
+	err := database.DB.Model([]models.Room{}).First(&room).Error
 
 	// show all room in database with owner and don't show owner password
 	if err != nil {
@@ -128,19 +126,13 @@ func GetRoomByHotelID(c *fiber.Ctx) error {
 		})
 	}
 
-	roomResponse := []models.RoomResponse{}
-
-	for _, room := range room {
-		roomResponse = append(roomResponse, models.RoomResponse{
-			ID:      				room.ID,
-			Name:    				room.Name,
-			Price:   				room.Price,
-			Description:  	room.Description,
-			HotelID: 				room.HotelID,
-		})
+	roomResponse := models.RoomResponse{
+		ID:          room.ID,
+		Name:        room.Name,
+		Price:       room.Price,
+		Description: room.Description,
+		HotelID:     room.HotelID,
 	}
-
-	
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"message": "room found",
